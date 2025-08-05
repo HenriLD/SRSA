@@ -40,18 +40,19 @@ CONVERGENCE_THRESHOLD = 1e-4
 # --- Environment Definition ---
 
 # For a tractable tabular model, the state and action spaces must be finite and discrete.
-ALL_MEANINGS = ('m1', 'm2', 'ms3')
-ALL_UTTERANCES = ('u1', 'u2', 'u3', 'u4')
+ALL_MEANINGS = ('red_square', 'blue_square', 'red_circle')
+ALL_UTTERANCES = ('red', 'blue', 'square', 'circle')
 
 # An utterance can be mapped to a single meaning. Utterances not in this
 # dictionary are considered semantically ambiguous (i.e., having a uniform
 # literal interpretation).
 LITERAL_MEANING = {
-    'u1': 'm1',
-    'u2': 'm2',
-    'u3': 'm3',
-    # 'u4' is intentionally omitted to be ambiguous.
+    'red':    {'red_square': 0.7, 'red_circle': 0.3},
+    'blue':   {'blue_square': 1.0},
+    'square': {'red_square': 0.6, 'blue_square': 0.4},
+    'circle': {'red_circle': 1.0}
 }
+
 
 # A simple cost function for utterances. Here we assume no cost.
 UTTERANCE_COSTS = {u: 0.0 for u in ALL_UTTERANCES}
@@ -61,6 +62,6 @@ UTTERANCE_COSTS = {u: 0.0 for u in ALL_UTTERANCES}
 # The true, private meanings for the agents in the simulation.
 # AGENT_PRIVATE_MEANINGS = {agent_id: meaning}
 AGENT_PRIVATE_MEANINGS = {
-    'A': 'm1',
-    'B': 'm2',
+    'A': 'red_square',
+    'B': 'red_circle',
 }

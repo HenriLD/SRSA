@@ -23,21 +23,24 @@ class PragmaticRewardCalculator:
     def _initialize_literal_listener(self) -> dict:
         """
         Builds the L_0 listener model based on the semantic mappings in config.
+        This version reads a dictionary of {meaning: probability} for each utterance.
         """
         listener = {}
         num_meanings = len(config.ALL_MEANINGS)
 
         for u in config.ALL_UTTERANCES:
             listener[u] = {m: 0.0 for m in config.ALL_MEANINGS}
-            literal_meaning = config.LITERAL_MEANING.get(u)
+            # literal_meaning_map is now a dict like {'red_square': 0.7, ...}
+            literal_meaning_map = config.LITERAL_MEANING.get(u)
 
-            if literal_meaning:
-                # This utterance has a defined literal meaning.
-                # The listener believes this utterance refers to its literal meaning.
-                listener[u][literal_meaning] = 1.0
+            if literal_meaning_map:
+                # The utterance has a defined literal meaning distribution.
+                # We assign the probabilities directly from the config.
+                for meaning, prob in literal_meaning_map.items():
+                    listener[u][meaning] = prob
             else:
-                # This utterance is ambiguous (e.g., 'u4').
-                # The listener assumes it could refer to any meaning equally.
+                # This utterance is semantically ambiguous with no defined prior.
+                # Assume it could refer to any meaning equally.
                 for m in config.ALL_MEANINGS:
                     listener[u][m] = 1.0 / num_meanings
         return listener
