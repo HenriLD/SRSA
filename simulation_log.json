@@ -1,0 +1,503 @@
+[
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -1.0986122856681098,
+      "u2": -1.0986122856681098,
+      "u3": -1.0986122856681098,
+      "u4": -1.0986122856681098
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -1.0986122856681098,
+      "u2": -1.0986122856681098,
+      "u3": -1.0986122856681098,
+      "u4": -1.0986122856681098
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 4,
+    "state": "DialogueState(turn_index=4, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.839698417761507,
+      "u2": -0.839698417761507,
+      "u3": -0.839698417761507,
+      "u4": -0.839698417761507
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.839698417761507,
+      "u2": -0.839698417761507,
+      "u3": -0.839698417761507,
+      "u4": -0.839698417761507
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 3,
+    "state": "DialogueState(turn_index=3, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.6066759366455644,
+      "u2": -0.6066759366455644,
+      "u3": -0.6066759366455644,
+      "u4": -0.6066759366455644
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.6066759366455644,
+      "u2": -0.6066759366455644,
+      "u3": -0.6066759366455644,
+      "u4": -0.6066759366455644
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 2,
+    "state": "DialogueState(turn_index=2, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.39695570364121613,
+      "u2": -0.39695570364121613,
+      "u3": -0.39695570364121613,
+      "u4": -0.39695570364121613
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.39695570364121613,
+      "u2": -0.39695570364121613,
+      "u3": -0.39695570364121613,
+      "u4": -0.39695570364121613
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 1,
+    "state": "DialogueState(turn_index=1, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.20820749393730276,
+      "u2": -0.20820749393730276,
+      "u3": -0.20820749393730276,
+      "u4": -0.20820749393730276
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "q_values": {
+      "u1": -0.20820749393730276,
+      "u2": -0.20820749393730276,
+      "u3": -0.20820749393730276,
+      "u4": -0.20820749393730276
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m2', 0.0), ('m1', 1.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 0.0), ('m1', 0.0), ('m2', 1.0)}))",
+    "q_values": {
+      "u1": 1.000000082240371e-09,
+      "u2": 1.000000082240371e-09,
+      "u3": 1.000000082240371e-09,
+      "u4": 1.000000082240371e-09
+    }
+  },
+  {
+    "type": "q_values",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='B', listener_id='A', speaker_private_meaning='m2', speaker_belief_of_listener=frozenset({('m3', 1.0), ('m2', 0.0), ('m1', 0.0)}))",
+    "q_values": {
+      "u1": -20.72326583694641,
+      "u2": -20.72326583694641,
+      "u3": -20.72326583694641,
+      "u4": -20.72326583694641
+    }
+  },
+  {
+    "type": "policy",
+    "turn": 0,
+    "state": "DialogueState(turn_index=0, dialogue_history=(), speaker_id='A', listener_id='B', speaker_private_meaning='m1', speaker_belief_of_listener=frozenset({('m2', 0.3333333333333333), ('m1', 0.3333333333333333), ('m3', 0.3333333333333333)}))",
+    "policy": {
+      "u1": 0.25,
+      "u2": 0.25,
+      "u3": 0.25,
+      "u4": 0.25
+    }
+  },
+  {
+    "type": "turn_event",
+    "turn": 0,
+    "speaker": "A",
+    "utterance": "u4",
+    "listener": "B"
+  },
+  {
+    "type": "belief_update",
+    "turn": -1,
+    "listener_id": "B",
+    "pre_decay_belief": {
+      "m1": 0.3333333333333333,
+      "m2": 0.3333333333333333,
+      "m3": 0.3333333333333333
+    },
+    "post_decay_belief": {
+      "m1": 0.3333333333333333,
+      "m2": 0.3333333333333333,
+      "m3": 0.3333333333333333
+    }
+  },
+  {
+    "type": "turn_event",
+    "turn": 1,
+    "speaker": "B",
+    "utterance": "u1",
+    "listener": "A"
+  },
+  {
+    "type": "turn_event",
+    "turn": 2,
+    "speaker": "A",
+    "utterance": "u2",
+    "listener": "B"
+  },
+  {
+    "type": "turn_event",
+    "turn": 3,
+    "speaker": "B",
+    "utterance": "u4",
+    "listener": "A"
+  },
+  {
+    "type": "turn_event",
+    "turn": 4,
+    "speaker": "A",
+    "utterance": "u1",
+    "listener": "B"
+  }
+]
