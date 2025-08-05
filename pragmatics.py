@@ -15,12 +15,32 @@ class PragmaticRewardCalculator:
     for a single turn to determine the communicative value of an utterance.
     """
     def __init__(self):
-        # Placeholder for literal listener model L_0(m|u).
-        # For simplicity, we assume a uniform literal interpretation.
-        self.literal_listener = {
-            u: {m: 1.0 / len(config.ALL_MEANINGS) for m in config.ALL_MEANINGS}
-            for u in config.ALL_UTTERANCES
-        }
+        # The literal listener (L_0) is the foundation of pragmatic reasoning.
+        # It's now based on the LITERAL_MEANING map from the config file,
+        # creating a simple "identification game" structure.
+        self.literal_listener = self._initialize_literal_listener()
+
+    def _initialize_literal_listener(self) -> dict:
+        """
+        Builds the L_0 listener model based on the semantic mappings in config.
+        """
+        listener = {}
+        num_meanings = len(config.ALL_MEANINGS)
+
+        for u in config.ALL_UTTERANCES:
+            listener[u] = {m: 0.0 for m in config.ALL_MEANINGS}
+            literal_meaning = config.LITERAL_MEANING.get(u)
+
+            if literal_meaning:
+                # This utterance has a defined literal meaning.
+                # The listener believes this utterance refers to its literal meaning.
+                listener[u][literal_meaning] = 1.0
+            else:
+                # This utterance is ambiguous (e.g., 'u4').
+                # The listener assumes it could refer to any meaning equally.
+                for m in config.ALL_MEANINGS:
+                    listener[u][m] = 1.0 / num_meanings
+        return listener
 
     def calculate_rewards_and_listener_model(self, state: DialogueState) -> (dict, dict):
         """
