@@ -17,7 +17,7 @@ GAMMA = 0.9
 # stochasticity of the agent's policy. It is the inverse of the RL temperature
 # (alpha_RSA = 1/alpha_RL). A high alpha leads to a more deterministic, "optimal" policy,
 # while a low alpha leads to more random exploration.
-ALPHA = 1.0
+ALPHA = 0.95
 
 # The belief decay factor (delta) from Equation 18. It controls the rate at which
 # an agent's confidence in its beliefs erodes, mixing the posterior with a
@@ -47,9 +47,9 @@ ALL_UTTERANCES = ('red', 'blue', 'square', 'circle')
 # dictionary are considered semantically ambiguous (i.e., having a uniform
 # literal interpretation).
 LITERAL_MEANING = {
-    'red':    {'red_square': 0.7, 'red_circle': 0.3},
+    'red':    {'red_square': 0.5, 'red_circle': 0.5},
     'blue':   {'blue_square': 1.0},
-    'square': {'red_square': 0.6, 'blue_square': 0.4},
+    'square': {'red_square': 0.5, 'blue_square': 0.5},
     'circle': {'red_circle': 1.0}
 }
 

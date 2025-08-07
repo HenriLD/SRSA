@@ -143,7 +143,8 @@ class MetricsTracker:
             ax.set_xticklabels(all_meanings, rotation=45, ha="right")
             ax.set_yticks(np.arange(max_turn + 1))
 
-            correct_meaning = agent_meanings_config[agent_id]
+            other_agent_id = [aid for aid in agent_ids if aid != agent_id][0]
+            correct_meaning = agent_meanings_config[other_agent_id]
             for label in ax.get_xticklabels():
                 if label.get_text() == correct_meaning:
                     label.set_color('green')
