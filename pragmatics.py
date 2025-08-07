@@ -15,32 +15,29 @@ class PragmaticRewardCalculator:
     for a single turn to determine the communicative value of an utterance.
     """
     def __init__(self):
-        # The literal listener (L_0) is the foundation of pragmatic reasoning.
-        # It's now based on the LITERAL_MEANING map from the config file,
-        # creating a simple "identification game" structure.
         self.literal_listener = self._initialize_literal_listener()
 
     def _initialize_literal_listener(self) -> dict:
         """
-        Builds the L_0 listener model based on the semantic mappings in config.
-        This version reads a dictionary of {meaning: probability} for each utterance.
+        Builds the L_0 listener model programmatically based on substring matching.
+        An utterance u refers to any meaning m if u is a substring of m.
         """
         listener = {}
         num_meanings = len(config.ALL_MEANINGS)
 
         for u in config.ALL_UTTERANCES:
             listener[u] = {m: 0.0 for m in config.ALL_MEANINGS}
-            # literal_meaning_map is now a dict like {'red_square': 0.7, ...}
-            literal_meaning_map = config.LITERAL_MEANING.get(u)
-
-            if literal_meaning_map:
-                # The utterance has a defined literal meaning distribution.
-                # We assign the probabilities directly from the config.
-                for meaning, prob in literal_meaning_map.items():
-                    listener[u][meaning] = prob
+            
+            # Find all meanings that contain the utterance as a substring
+            matching_meanings = [m for m in config.ALL_MEANINGS if u in m]
+            
+            if matching_meanings:
+                # Assign uniform probability over the matching meanings
+                prob = 1.0 / len(matching_meanings)
+                for m in matching_meanings:
+                    listener[u][m] = prob
             else:
-                # This utterance is semantically ambiguous with no defined prior.
-                # Assume it could refer to any meaning equally.
+                # If no meaning contains the utterance, it's ambiguous across all meanings
                 for m in config.ALL_MEANINGS:
                     listener[u][m] = 1.0 / num_meanings
         return listener

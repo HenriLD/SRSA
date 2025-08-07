@@ -10,6 +10,7 @@ from tqdm import tqdm
 import config
 from state import DialogueState
 from pragmatics import PragmaticRewardCalculator
+from collections import deque
 
 class TabularBellmanSolver:
     """
@@ -22,7 +23,6 @@ class TabularBellmanSolver:
         self.metrics = metrics
         self.q_table = {}  # Q(s,a) lookup: (turn, state) -> {action: value}
         self.v_table = {}  # V(s) lookup: (turn, state) -> value
-        # Cache for pragmatic computations to be used by the DialogueManager
         self.pragmatic_cache = {} # (turn, state) -> (rewards, listener_model)
 
     def _get_next_state(self, s_t: DialogueState, u_t: str, listener_model: dict) -> DialogueState:
@@ -81,16 +81,28 @@ class TabularBellmanSolver:
         )
 
         reachable_states = {t: set() for t in range(config.HORIZON + 1)}
-        reachable_states[0] = {initial_state}
+        queue = deque([initial_state])
+        visited_states = {initial_state}
 
-        for t in tqdm(range(config.HORIZON), desc="Discovering States"):
-            for s_t in reachable_states[t]:
-                # We need the listener model to find the next state's belief
-                _, listener_model = self.reward_calculator.calculate_rewards_and_listener_model(s_t)
-                for u_t in config.ALL_UTTERANCES:
-                    s_t_plus_1 = self._get_next_state(s_t, u_t, listener_model)
-                    if s_t_plus_1.turn_index <= config.HORIZON:
-                        reachable_states[s_t_plus_1.turn_index].add(s_t_plus_1)
+        pbar = tqdm(desc="Discovering States")
+        while queue:
+            s_t = queue.popleft()
+            pbar.update(1)
+
+            reachable_states[s_t.turn_index].add(s_t)
+
+            if s_t.turn_index >= config.HORIZON:
+                continue
+
+            # We need the listener model to find the next state's belief
+            _, listener_model = self.reward_calculator.calculate_rewards_and_listener_model(s_t)
+
+            for u_t in config.ALL_UTTERANCES:
+                s_t_plus_1 = self._get_next_state(s_t, u_t, listener_model)
+                if s_t_plus_1 not in visited_states:
+                    visited_states.add(s_t_plus_1)
+                    queue.append(s_t_plus_1)
+        pbar.close()
 
         # --- Phase 2: Backward induction over the discovered reachable states ---
         print("Phase 2: Backward induction over reachable states...")

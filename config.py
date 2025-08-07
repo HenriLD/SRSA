@@ -40,19 +40,8 @@ CONVERGENCE_THRESHOLD = 1e-4
 # --- Environment Definition ---
 
 # For a tractable tabular model, the state and action spaces must be finite and discrete.
-ALL_MEANINGS = ('red_square', 'blue_square', 'red_circle')
-ALL_UTTERANCES = ('red', 'blue', 'square', 'circle')
-
-# An utterance can be mapped to a single meaning. Utterances not in this
-# dictionary are considered semantically ambiguous (i.e., having a uniform
-# literal interpretation).
-LITERAL_MEANING = {
-    'red':    {'red_square': 0.5, 'red_circle': 0.5},
-    'blue':   {'blue_square': 1.0},
-    'square': {'red_square': 0.5, 'blue_square': 0.5},
-    'circle': {'red_circle': 1.0}
-}
-
+ALL_MEANINGS = ('red_square', 'blue_square', 'red_circle', 'green_circle', 'green_triangle', 'shiny_red_square', 'dull_blue_circle', 'shiny_green_triangle', 'shiny_red_triangle', 'dull_blue_square')
+ALL_UTTERANCES = ('red', 'blue', 'square', 'circle', 'green', 'triangle', 'shiny', 'dull')
 
 # A simple cost function for utterances. Here we assume no cost.
 UTTERANCE_COSTS = {u: 0.0 for u in ALL_UTTERANCES}
