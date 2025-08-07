@@ -108,7 +108,17 @@ class TabularBellmanSolver:
         print("Phase 2: Backward induction over reachable states...")
         # Initialize V for the terminal states at the horizon (value is 0)
         for s_H in reachable_states.get(config.HORIZON, []):
-            self.v_table[(config.HORIZON, s_H)] = 0.0
+            # The terminal reward is based on the listener's belief about the speaker's true meaning from the *previous* turn.
+            # In state s_H, the 'speaker' was the 'listener' in the final turn (H-1).
+            # Their belief about the speaker from turn H-1 is s_H.speaker_belief_of_listener.
+            # The meaning they were trying to guess belonged to the agent who was the speaker at H-1, who is the listener in s_H.
+            belief_dict = s_H.get_belief_dict()
+            true_meaning_of_previous_speaker = config.AGENT_PRIVATE_MEANINGS[s_H.listener_id]
+            
+            # The reward is log(B_L,n(m_S*)) as per the paper, where B_L,n is the listener's final belief.
+            belief_in_correct_meaning = belief_dict.get(true_meaning_of_previous_speaker, 1e-9) # Use a small epsilon to avoid log(0)
+            terminal_reward = np.log(belief_in_correct_meaning) * config.FINAL_REWARD_SCALAR
+            self.v_table[(config.HORIZON, s_H)] = terminal_reward
 
         for t in tqdm(range(config.HORIZON - 1, -1, -1), desc="Solving Turns"):
             for s_t in reachable_states[t]:

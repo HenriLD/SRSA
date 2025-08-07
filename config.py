@@ -26,7 +26,11 @@ BELIEF_DECAY_DELTA = 0.05
 
 # The dialogue horizon (H), the maximum number of turns. For the tabular
 # backward induction solver, this must be a finite number.
-HORIZON = 5
+HORIZON = 6
+
+# The final states reward scalar, which emphasizes the importance of reaching
+# a high-value final state in the dialogue.
+FINAL_REWARD_SCALAR = 6.0
 
 # --- Inner Loop (Pragmatics) Parameters ---
 
@@ -40,8 +44,8 @@ CONVERGENCE_THRESHOLD = 1e-4
 # --- Environment Definition ---
 
 # For a tractable tabular model, the state and action spaces must be finite and discrete.
-ALL_MEANINGS = ('red_square', 'blue_square', 'red_circle', 'green_circle', 'green_triangle', 'shiny_red_square', 'dull_blue_circle', 'shiny_green_triangle', 'shiny_red_triangle', 'dull_blue_square')
-ALL_UTTERANCES = ('red', 'blue', 'square', 'circle', 'green', 'triangle', 'shiny', 'dull')
+ALL_MEANINGS = ('red_square', 'large_blue_square', 'small_red_circle', 'dull_green_circle', 'green_triangle', 'shiny_red_square', 'dull_blue_circle', 'shiny_green_triangle', 'shiny_red_triangle', 'dull_blue_square', 'dull_green_circle', 'large_red_square', 'small_blue_circle', 'large_green_triangle', 'small_shiny_red_square', 'small_dull_blue_circle')
+ALL_UTTERANCES = ('red', 'blue', 'square', 'circle', 'green', 'triangle', 'shiny', 'dull', 'large', 'small')
 
 # A simple cost function for utterances. Here we assume no cost.
 UTTERANCE_COSTS = {u: 0.0 for u in ALL_UTTERANCES}
@@ -51,6 +55,6 @@ UTTERANCE_COSTS = {u: 0.0 for u in ALL_UTTERANCES}
 # The true, private meanings for the agents in the simulation.
 # AGENT_PRIVATE_MEANINGS = {agent_id: meaning}
 AGENT_PRIVATE_MEANINGS = {
-    'A': 'red_square',
-    'B': 'red_circle',
+    'A': 'small_shiny_red_square',
+    'B': 'small_dull_blue_circle',
 }
