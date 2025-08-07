@@ -11,6 +11,8 @@ from pragmatics import PragmaticRewardCalculator
 from solvers import TabularBellmanSolver
 from agent import StrategicAgent
 from dialogue_manager import DialogueManager
+import os
+import datetime
 
 def main():
     """
@@ -22,6 +24,16 @@ def main():
     print(f"GAMMA: {config.GAMMA}, ALPHA: {config.ALPHA}, HORIZON: {config.HORIZON}")
     print(f"AGENT_PRIVATE_MEANINGS: {config.AGENT_PRIVATE_MEANINGS}")
     print("-" * 21)
+
+    # Create the main 'results' folder if it doesn't exist
+    if not os.path.exists('results'):
+        os.makedirs('results')
+
+    # Create a subfolder named with the current date and time
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    results_dir = os.path.join('results', timestamp)
+    os.makedirs(results_dir)
+    print(f"Results will be saved in: {results_dir}")
 
     # 2. Instantiation: Create computational modules
     pragmatic_calculator = PragmaticRewardCalculator()
@@ -56,7 +68,9 @@ def main():
     dialogue_manager.run_dialogue()
 
     # 5. Analysis: Save the comprehensive log file
-    metrics_tracker.save("simulation_log.json")
+    log_file_path = os.path.join(results_dir, "simulation_log.json")
+    metrics_tracker.save(log_file_path)
+    metrics_tracker.generate_belief_matrices_from_log(log_file_path, config.AGENT_PRIVATE_MEANINGS, results_dir)
 
 if __name__ == "__main__":
     main()

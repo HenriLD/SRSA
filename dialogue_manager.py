@@ -66,7 +66,7 @@ class DialogueManager:
                 continue
 
             # 6. Call the listener's listen() method
-            listener.listen(utterance, listener_model)
+            listener.listen(utterance, listener_model, t, speaker.private_meaning)
             print(f"Listener '{listener_id}' updated beliefs to: {listener.belief_of_other_agent}")
 
         print("\n--- Dialogue Finished ---")

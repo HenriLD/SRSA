@@ -49,7 +49,7 @@ class StrategicAgent:
         chosen_utterance = np.random.choice(utterances, p=policy_probs)
         return chosen_utterance
 
-    def listen(self, utterance: Utterance, pragmatic_listener_model: dict):
+    def listen(self, utterance: Utterance, pragmatic_listener_model: dict, turn: int, speaker_private_meaning: str):
         """
         Interprets an utterance and updates internal belief state about the other agent.
         """
@@ -66,11 +66,12 @@ class StrategicAgent:
         }
         
         self.metrics.log_belief_update(
-            turn=-1, # Turn index is managed by DialogueManager
-            listener_id=self.id,
-            pre_decay=pre_decay_belief,
-            post_decay=final_belief
-        )
+        turn=turn,
+        listener_id=self.id,
+        pre_decay=pre_decay_belief,
+        post_decay=final_belief,
+        speaker_private_meaning=speaker_private_meaning
+    )
 
         # 3. Update internal belief state
         self.belief_of_other_agent = final_belief
