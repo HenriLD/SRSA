@@ -1,10 +1,5 @@
-"""
-main.py - Main Entry Point
+# main.py
 
-This is the top-level script that wires all the other components together and
-executes a simulation run, delineating the offline "solving" phase and the
-online "simulation" phase.
-"""
 import config
 from metrics import MetricsTracker
 from pragmatics import PragmaticRewardCalculator
@@ -13,64 +8,125 @@ from agent import StrategicAgent
 from dialogue_manager import DialogueManager
 import os
 import datetime
+import torch
+from tqdm import tqdm
 
-def main():
+def run_tabular_simulation(results_dir: str):
     """
-    Serves as the main executable for the project.
+    Runs the original simulation using the TabularBellmanSolver.
     """
-    # 1. Setup: Initialize metrics and load parameters from config
     metrics_tracker = MetricsTracker()
-    print("--- Configuration ---")
-    print(f"GAMMA: {config.GAMMA}, ALPHA: {config.ALPHA}, HORIZON: {config.HORIZON}")
-    print(f"AGENT_PRIVATE_MEANINGS: {config.AGENT_PRIVATE_MEANINGS}")
-    print("-" * 21)
-
-    # Create the main 'results' folder if it doesn't exist
-    if not os.path.exists('results'):
-        os.makedirs('results')
-
-    # Create a subfolder named with the current date and time
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    results_dir = os.path.join('results', timestamp)
-    os.makedirs(results_dir)
-    print(f"Results will be saved in: {results_dir}")
-
-    # 2. Instantiation: Create computational modules
     pragmatic_calculator = PragmaticRewardCalculator()
     bellman_solver = TabularBellmanSolver(pragmatic_calculator, metrics_tracker)
 
-    # 3. Offline Solving Phase: Pre-calculate the Q-function
+    print("--- Running Tabular Simulation ---")
+    # Offline Solving Phase
     q_table, pragmatic_cache = bellman_solver.solve_for_policy()
 
-    # 4. Online Simulation Phase
-    # a. Initialize agents with their private info and the shared policy (Q-table)
+    # Online Simulation Phase
     initial_uniform_belief = {m: 1.0 / len(config.ALL_MEANINGS) for m in config.ALL_MEANINGS}
-
-    agent_A = StrategicAgent(
-        agent_id='A',
-        private_meaning=config.AGENT_PRIVATE_MEANINGS['A'],
-        initial_belief=initial_uniform_belief.copy(),
-        q_table=q_table,
-        metrics=metrics_tracker
-    )
-    agent_B = StrategicAgent(
-        agent_id='B',
-        private_meaning=config.AGENT_PRIVATE_MEANINGS['B'],
-        initial_belief=initial_uniform_belief.copy(),
-        q_table=q_table,
-        metrics=metrics_tracker
-    )
+    agent_A = StrategicAgent('A', config.AGENT_PRIVATE_MEANINGS['A'], initial_uniform_belief.copy(), q_table, metrics_tracker)
+    agent_B = StrategicAgent('B', config.AGENT_PRIVATE_MEANINGS['B'], initial_uniform_belief.copy(), q_table, metrics_tracker)
     
-    # b. Initialize the Dialogue Manager
     dialogue_manager = DialogueManager(agent_A, agent_B, pragmatic_cache, metrics_tracker)
-
-    # c. Run the turn-by-turn simulation
     dialogue_manager.run_dialogue()
 
-    # 5. Analysis: Save the comprehensive log file
-    log_file_path = os.path.join(results_dir, "simulation_log.json")
+    # Analysis
+    log_file_path = os.path.join(results_dir, "tabular_simulation_log.json")
     metrics_tracker.save(log_file_path)
     metrics_tracker.generate_belief_matrices_from_log(log_file_path, config.AGENT_PRIVATE_MEANINGS, results_dir)
+
+def run_dqn_training(results_dir: str):
+    """
+    Runs the training loop for the DQN-based agent.
+    """
+    # Import DQN classes locally to avoid dependency if not used
+    from dqn_solver import DQNSolver, featurize_state
+    from state import DialogueState
+    
+    print("--- Running DQN Training ---")
+    metrics_tracker = MetricsTracker()
+    solver = DQNSolver(metrics_tracker)
+    
+    steps_done = 0
+    
+    for i_episode in tqdm(range(config.DQN_NUM_EPISODES), desc="Training Episodes"):
+        # Initialize the environment for each episode
+        initial_belief = frozenset({m: 1.0 / len(config.ALL_MEANINGS) for m in config.ALL_MEANINGS}.items())
+        state = DialogueState(0, (), 'A', 'B', config.AGENT_PRIVATE_MEANINGS['A'], initial_belief)
+
+        for t in range(config.HORIZON):
+            state_tensor = featurize_state(state, solver.meaning_map, solver.utterance_map)
+            utterance, action_tensor = solver.select_action(state, steps_done)
+            steps_done += 1
+
+            rewards, listener_model = solver.pragmatic_calculator.calculate_rewards_and_listener_model(state)
+            immediate_reward = rewards[utterance]
+            reward_tensor = torch.tensor([immediate_reward], device=solver.device)
+            
+            # Determine next state
+            next_state = None
+            if t < config.HORIZON - 1:
+                next_speaker_id = state.listener_id
+                posterior = listener_model[utterance]
+                next_belief = frozenset({
+                    m: (1 - config.BELIEF_DECAY_DELTA) * p + config.BELIEF_DECAY_DELTA / len(config.ALL_MEANINGS) 
+                    for m, p in posterior.items()
+                }.items())
+                
+                next_state = DialogueState(
+                    turn_index=t + 1,
+                    dialogue_history=state.dialogue_history + (utterance,),
+                    speaker_id=next_speaker_id,
+                    listener_id=state.speaker_id,
+                    speaker_private_meaning=config.AGENT_PRIVATE_MEANINGS[next_speaker_id],
+                    speaker_belief_of_listener=next_belief
+                )
+                next_state_tensor = featurize_state(next_state, solver.meaning_map, solver.utterance_map)
+            else:
+                next_state_tensor = None
+
+            solver.memory.push(state_tensor, action_tensor, next_state_tensor, reward_tensor)
+            
+            state = next_state
+            if state is None:
+                break
+            
+            solver.optimize_model()
+
+        if i_episode % config.DQN_TARGET_UPDATE_FREQUENCY == 0:
+            solver.update_target_net()
+    
+    print("DQN Training Complete.")
+    model_path = os.path.join(results_dir, "dqn_policy_net.pth")
+    torch.save(solver.policy_net.state_dict(), model_path)
+    print(f"Model saved to {model_path}")
+
+
+def main():
+    """
+    Main executable for the project.
+    """
+    print("--- Configuration ---")
+    print(f"SOLVER_TYPE: {config.SOLVER_TYPE}")
+    print(f"GAMMA: {config.GAMMA}, ALPHA: {config.ALPHA}, HORIZON: {config.HORIZON}")
+    print("-" * 21)
+
+    # Setup results directory
+    if not os.path.exists('results'):
+        os.makedirs('results')
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    results_dir = os.path.join('results', f"{timestamp}_{config.SOLVER_TYPE}")
+    os.makedirs(results_dir)
+    print(f"Results will be saved in: {results_dir}")
+
+    # --- Route to the selected solver ---
+    if config.SOLVER_TYPE == 'TABULAR':
+        run_tabular_simulation(results_dir)
+    elif config.SOLVER_TYPE == 'DQN':
+        run_dqn_training(results_dir)
+    else:
+        print(f"Error: Unknown SOLVER_TYPE '{config.SOLVER_TYPE}' in config.py")
 
 if __name__ == "__main__":
     main()
