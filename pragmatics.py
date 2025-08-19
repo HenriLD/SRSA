@@ -10,8 +10,7 @@ from state import DialogueState
 
 class PragmaticRewardCalculator:
     """
-    This class is responsible for the pragmatic reasoning part of the model.
-    It simulates a recursive reasoning process between a speaker and a listener
+    Simulates a recursive reasoning process between a speaker and a listener
     for a single turn to determine the communicative value of an utterance.
     """
     def __init__(self):
@@ -44,13 +43,11 @@ class PragmaticRewardCalculator:
 
     def calculate_rewards_and_listener_model(self, state: DialogueState) -> (dict, dict):
         """
-        Primary public method. Orchestrates the pragmatic calculation for a given state.
+        Orchestrates the pragmatic calculation for a given state.
 
         Process:
-        1. Runs the Alternating Maximization (AM) algorithm to find the
-           converged, optimal per-turn speaker (S*_t) and listener (L*_t) models.
-        2. Uses the optimal listener model L*_t to calculate the immediate
-           reward for every possible utterance according to Equation 11.
+        1. Runs the AM algorithm to find the converged, optimal per-turn speaker (S*_t) and listener (L*_t) models.
+        2. Uses the optimal listener model L*_t to calculate the immediate reward for every possible utterance according to Equation 11.
 
         Returns:
             A tuple containing:
@@ -59,8 +56,11 @@ class PragmaticRewardCalculator:
         """
         # The speaker's belief about the listener's meaning is used to weight the optimization
         listener_meaning_belief = state.get_belief_dict()
+        
+        speaker_utterances = config.AGENT_UTTERANCES.get(state.speaker_id, config.ALL_UTTERANCES)
 
-        # --- Alternating Maximization (AM) Algorithm ---
+
+        # --- Alternating Maximization ---
         # Initialize listener model (L_t) with the literal listener (L_0)
         listener_model = self.literal_listener
 
@@ -69,7 +69,7 @@ class PragmaticRewardCalculator:
             speaker_model = {}
             for m_s in config.ALL_MEANINGS:
                 # Numerator: exp(log(L_t(m_s|u)) - C(u)) = L_t(m_s|u) / exp(C(u))
-                utilities = {u: listener_model[u][m_s] / np.exp(config.UTTERANCE_COSTS[u]) for u in config.ALL_UTTERANCES}
+                utilities = {u: listener_model[u][m_s] / np.exp(config.UTTERANCE_COSTS[u]) for u in speaker_utterances}
                 # Normalization
                 total_utility = sum(utilities.values())
                 speaker_model[m_s] = {u: utilities[u] / total_utility if total_utility > 0 else 0 for u in utilities}
@@ -80,7 +80,7 @@ class PragmaticRewardCalculator:
 
             for u in config.ALL_UTTERANCES:
                 # Numerator: S_t(u|m) * P(m) where P(m) is speaker's belief about listener's meaning
-                posteriors = {m: speaker_model[m][u] * listener_meaning_belief[m] for m in config.ALL_MEANINGS}
+                posteriors = {m: speaker_model.get(m, {}).get(u, 0) * listener_meaning_belief.get(m, 0) for m in config.ALL_MEANINGS}
                 # Normalization (Bayes' rule)
                 total_prob = sum(posteriors.values())
                 next_listener_model[u] = {m: posteriors[m] / total_prob if total_prob > 0 else 0 for m in posteriors}
@@ -105,7 +105,7 @@ class PragmaticRewardCalculator:
         if goal_mappings:
             # Context-dependent reward calculation
             speaker_belief_about_listener = state.get_belief_dict()
-            for u in config.ALL_UTTERANCES:
+            for u in speaker_utterances:
                 expected_log_prob = 0
                 # Iterate over the possible listener states (contexts) defined in the mapping
                 for listener_state, target_meaning in goal_mappings.items():
@@ -123,7 +123,7 @@ class PragmaticRewardCalculator:
                 rewards[u] = expected_log_prob - cost
         else:
             # Original, context-independent reward calculation
-            for u in config.ALL_UTTERANCES:
+            for u in speaker_utterances:
                 prob_correct_interpretation = optimal_listener_model[u].get(speaker_true_meaning, 0.0)
                 log_prob = np.log(prob_correct_interpretation + 1e-9)
                 cost = config.UTTERANCE_COSTS[u]

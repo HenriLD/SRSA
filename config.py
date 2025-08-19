@@ -1,12 +1,12 @@
 # --- Scenario Selection ---
 # Options: 'ORIGINAL', 'DIRECTIONS'
-SCENARIO = 'DIRECTIONS'
+SCENARIO = 'DIRECTIONS_COMPLEX'
 
 # --- Model Hyperparameters ---
 GAMMA = 0.95  # Increased to encourage long-term planning
 ALPHA = 5
 BELIEF_DECAY_DELTA = 0.05
-HORIZON = 4 # Shorter horizon for a simpler scenario
+HORIZON = 4 
 FINAL_REWARD_SCALAR = 20.0 # Increased to emphasize goal completion
 
 # --- Inner Loop (Pragmatics) Parameters ---
@@ -67,6 +67,69 @@ elif SCENARIO == 'DIRECTIONS':
             'is_tourist': 'directions_for_tourist'
         }
     }
+
+elif SCENARIO == 'DIRECTIONS_COMPLEX':
+    # --- Environment Definition (Complex Directions Scenario) ---
+    # Meta-Meaning: 'get_to_grand_library'
+
+    # Sub-Meanings
+    ALL_MEANINGS = (
+        'directions_expert', 'directions_novice',
+        'ask_monument', 'ask_port',
+        'is_expert', 'is_novice', 'is_intermediate'
+    )
+
+    # Utterances for each agent
+    AGENT_A_UTTERANCES = ( # The direction giver
+        'take_express_bus', 'take_scenic_route',
+        'do_you_know_the_monument', 'do_you_know_the_old_port'
+    )
+    AGENT_B_UTTERANCES = ( # The direction asker
+        'yes', 'no'
+    )
+    ALL_UTTERANCES = AGENT_A_UTTERANCES + AGENT_B_UTTERANCES
+    AGENT_UTTERANCES = {
+        'A': AGENT_A_UTTERANCES,
+        'B': AGENT_B_UTTERANCES
+    }
+
+
+    # Utterance Costs
+    UTTERANCE_COSTS = {
+        'take_express_bus': 0,
+        'take_scenic_route': 0,
+        'do_you_know_the_monument': 0.5,
+        'do_you_know_the_old_port': 0.4,
+        'yes': 1,
+        'no': 1.1
+    }
+
+    # Agent Private Meanings
+    AGENT_PRIVATE_MEANINGS = {
+        'A': 'get_to_grand_library',
+        'B': 'is_expert',
+    }
+
+    # Literal Mappings
+    LITERAL_LISTENER_MAPPINGS = {
+        'take_express_bus': ['directions_expert'],
+        'take_scenic_route': ['directions_novice'],
+        'do_you_know_the_monument': ['ask_monument'],
+        'do_you_know_the_old_port': ['ask_port'],
+        'yes': ['is_expert', 'is_intermediate'],
+        'no': ['is_novice']
+    }
+
+    # Goal Achievement Mappings
+    GOAL_ACHIEVEMENT_MAPPINGS = {
+        'get_to_grand_library': {
+            'is_expert': 'directions_expert',
+            'is_intermediate': 'directions_novice',
+            'is_novice': 'directions_novice'
+        }
+    }
+
+    HORIZON = 6
 
 
 

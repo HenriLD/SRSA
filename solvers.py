@@ -1,8 +1,7 @@
 """
 solvers.py - The Outer Loop
 
-This module implements the "Outer Loop" strategist. Its job is to solve the main
-recursive Bellman Equation to determine the long-term, strategic value.
+Its job is to solve the main recursive Bellman Equation to determine the long-term, strategic value.
 """
 import itertools
 import numpy as np
@@ -60,14 +59,10 @@ class TabularBellmanSolver:
         1. A forward pass to discover all states reachable from the initial state.
         2. A backward induction pass over only those reachable states to solve for values.
         """
-        print("Starting offline solving phase...")
-
-        # --- Phase 1: Forward pass to discover all reachable states ---
         print("Phase 1: Discovering reachable state space...")
         initial_belief = frozenset(
             {m: 1.0 / len(config.ALL_MEANINGS) for m in config.ALL_MEANINGS}.items()
         )
-        # The DialogueManager starts with a specific agent, so we match that.
         initial_speaker_id = 'A'
         initial_listener_id = 'B'
 
@@ -97,14 +92,14 @@ class TabularBellmanSolver:
             # We need the listener model to find the next state's belief
             _, listener_model = self.reward_calculator.calculate_rewards_and_listener_model(s_t)
 
-            for u_t in config.ALL_UTTERANCES:
+            speaker_utterances = config.AGENT_UTTERANCES.get(s_t.speaker_id, config.ALL_UTTERANCES)
+            for u_t in speaker_utterances:
                 s_t_plus_1 = self._get_next_state(s_t, u_t, listener_model)
                 if s_t_plus_1 not in visited_states:
                     visited_states.add(s_t_plus_1)
                     queue.append(s_t_plus_1)
         pbar.close()
 
-        # --- Phase 2: Backward induction over the discovered reachable states ---
         print("Phase 2: Backward induction over reachable states...")
         # Initialize V for the terminal states at the horizon (value is 0)
         for s_H in reachable_states.get(config.HORIZON, []):
@@ -140,27 +135,28 @@ class TabularBellmanSolver:
 
         for t in tqdm(range(config.HORIZON - 1, -1, -1), desc="Solving Turns"):
             for s_t in reachable_states[t]:
-                # 1. Get immediate rewards R_t and cache them along with the listener model
+                # Get immediate rewards R_t and cache them along with the listener model
                 rewards, listener_model = self.reward_calculator.calculate_rewards_and_listener_model(s_t)
                 self.pragmatic_cache[(t, s_t)] = (rewards, listener_model)
 
                 q_values_s_t = {}
-                for u_t in config.ALL_UTTERANCES:
+                speaker_utterances = config.AGENT_UTTERANCES.get(s_t.speaker_id, config.ALL_UTTERANCES)
+                for u_t in speaker_utterances:
                     R_t = rewards[u_t]
 
-                    # 2. Find the deterministic next state s_{t+1}
+                    # Find the deterministic next state s_{t+1}
                     s_t_plus_1 = self._get_next_state(s_t, u_t, listener_model)
 
-                    # 3. V_{t+1} is known because we are iterating backwards
+                    # V_{t+1} is known because we are iterating backwards
                     V_t_plus_1 = self.v_table.get((t + 1, s_t_plus_1), 0.0)
 
-                    # 4. Apply the Bellman Equation: Q_t = R_t + gamma * V_{t+1}
+                    # Apply the Bellman Equation: Q_t = R_t + gamma * V_{t+1}
                     q_values_s_t[u_t] = R_t + config.GAMMA * V_t_plus_1
 
                 self.q_table[(t, s_t)] = q_values_s_t
                 self.metrics.log_q_values(t, s_t, q_values_s_t)
 
-                # 5. Calculate V_t(s_t) from Q_t(s_t, u) using the log-sum-exp formulation
+                # Calculate V_t(s_t) from Q_t(s_t, u) using the log-sum-exp formulation
                 q_vals = np.array(list(q_values_s_t.values()))
                 if len(q_vals) == 0:
                     self.v_table[(t, s_t)] = 0.0

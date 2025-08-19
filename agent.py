@@ -1,8 +1,8 @@
 """
 agent.py - The Strategic Agent
 
-This class defines the dialogue agent itself. It encapsulates the agent's private state
-and its behavioral logic for both speaking (acting) and listening.
+Defines the dialogue agent itself. It encapsulates the agent's private state
+and its behavioral logic for both speaking and listening.
 """
 import numpy as np
 import config
@@ -22,10 +22,10 @@ class StrategicAgent:
 
     def act(self, state: DialogueState) -> Utterance:
         """
-        Selects an optimal communicative action (utterance) when speaking.
+        Selects an optimal utterance when speaking.
         This method is the runtime execution of the optimal speaker policy S*_t.
         """
-        # 1. Retrieve pre-computed Q-values for the current state.
+        # Retrieve pre-computed Q-values for the current state.
         # Use .get() to handle cases where a state might not be in the table due to generation simplification.
         q_values = self.q_table.get((state.turn_index, state), {})
         if not q_values:
@@ -33,7 +33,7 @@ class StrategicAgent:
             # Fallback to a uniform random policy if state is not found
             return np.random.choice(list(config.ALL_UTTERANCES))
 
-        # 2. Form the optimal strategic policy (softmax over Q-values) using a stable implementation
+        # Form the optimal strategic policy (softmax over Q-values) using a stable implementation
         # S*_t(u_t|s_t) propto exp(Q_t(s_t, u_t) / alpha)
         utterances = list(q_values.keys())
         q_vals = np.array([q_values[u] for u in utterances])
@@ -48,7 +48,7 @@ class StrategicAgent:
         policy = {u: p for u, p in zip(utterances, policy_probs)}
         self.metrics.log_policy(state.turn_index, state, policy)
 
-        # 3. Sample a single utterance from this policy distribution
+        # Sample a single utterance from this policy distribution
         chosen_utterance = np.random.choice(utterances, p=policy_probs)
         return chosen_utterance
 
@@ -56,12 +56,12 @@ class StrategicAgent:
         """
         Interprets an utterance and updates internal belief state about the other agent.
         """
-        # 1. Use the provided converged listener model L*_t for Bayesian inference
+        #  Use the provided converged listener model L*_t for Bayesian inference
         # B'_{new}(m|u) = L*_t(m_S | u_t)
         posterior_belief = pragmatic_listener_model[utterance]
         pre_decay_belief = posterior_belief.copy()
 
-        # 2. Apply the belief decay mechanism from Equation 18
+        # Apply the belief decay mechanism from Equation 18
         num_meanings = len(config.ALL_MEANINGS)
         final_belief = {
             m: (1 - config.BELIEF_DECAY_DELTA) * prob + config.BELIEF_DECAY_DELTA / num_meanings
@@ -76,5 +76,5 @@ class StrategicAgent:
         speaker_private_meaning=speaker_private_meaning
     )
 
-        # 3. Update internal belief state
+        # Update internal belief state
         self.belief_of_other_agent = final_belief

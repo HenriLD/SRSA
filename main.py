@@ -1,5 +1,3 @@
-# main.py
-
 import config
 from metrics import MetricsTracker
 from pragmatics import PragmaticRewardCalculator
