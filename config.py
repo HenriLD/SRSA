@@ -39,9 +39,9 @@ elif SCENARIO == 'DIRECTIONS':
     # Utterance Costs
     UTTERANCE_COSTS = {
         'turn_left_at_courthouse': 1.0,
-        'turn_left_on_maple': 1.5, # More complex utterance
-        'are_you_familiar_with_landmarks': 0.5, # Low cost question
-        'yes': 0.2,
+        'turn_left_on_maple': 0.5, # More complex utterance
+        'are_you_familiar_with_landmarks': 0.9, # Low cost question
+        'yes': 0.0,
         'no': 0.2
     }
 
@@ -57,8 +57,8 @@ elif SCENARIO == 'DIRECTIONS':
     }
 
     AGENT_PRIVATE_MEANINGS = {
-        'A': 'get_to_train_station', # Speaker's meta-meaning
-        'B': 'is_tourist'         # Listener's true internal state
+        'A': 'is_tourist',  # Speaker's meta-meaning
+        'B': 'get_to_train_station',       # Listener's true internal state
     }
     # Defines which sub-meaning achieves the goal for a given listener state
     GOAL_ACHIEVEMENT_MAPPINGS = {

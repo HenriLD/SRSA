@@ -113,8 +113,8 @@ class PragmaticRewardCalculator:
                     belief_in_state = speaker_belief_about_listener.get(listener_state, 0)
 
                     # Log-probability of the listener interpreting the utterance as the target meaning
-                    prob_correct_interpretation = optimal_listener_model[u].get(target_meaning, 1e-9)
-                    log_prob = np.log(prob_correct_interpretation)
+                    prob_correct_interpretation = optimal_listener_model[u].get(target_meaning, 0.0)
+                    log_prob = np.log(prob_correct_interpretation + 1e-9)
 
                     # Weight the log-prob by the belief that this is the correct context
                     expected_log_prob += belief_in_state * log_prob
@@ -124,8 +124,8 @@ class PragmaticRewardCalculator:
         else:
             # Original, context-independent reward calculation
             for u in config.ALL_UTTERANCES:
-                prob_correct_interpretation = optimal_listener_model[u].get(speaker_true_meaning, 1e-9)
-                log_prob = np.log(prob_correct_interpretation)
+                prob_correct_interpretation = optimal_listener_model[u].get(speaker_true_meaning, 0.0)
+                log_prob = np.log(prob_correct_interpretation + 1e-9)
                 cost = config.UTTERANCE_COSTS[u]
                 rewards[u] = log_prob - cost
 
