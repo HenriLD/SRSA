@@ -108,17 +108,35 @@ class TabularBellmanSolver:
         print("Phase 2: Backward induction over reachable states...")
         # Initialize V for the terminal states at the horizon (value is 0)
         for s_H in reachable_states.get(config.HORIZON, []):
-            # The terminal reward is based on the listener's belief about the speaker's true meaning from the *previous* turn.
-            # In state s_H, the 'speaker' was the 'listener' in the final turn (H-1).
-            # Their belief about the speaker from turn H-1 is s_H.speaker_belief_of_listener.
-            # The meaning they were trying to guess belonged to the agent who was the speaker at H-1, who is the listener in s_H.
             belief_dict = s_H.get_belief_dict()
-            true_meaning_of_previous_speaker = config.AGENT_PRIVATE_MEANINGS[s_H.listener_id]
             
-            # The reward is log(B_L,n(m_S*)) as per the paper, where B_L,n is the listener's final belief.
-            belief_in_correct_meaning = belief_dict.get(true_meaning_of_previous_speaker, 1e-9) # Use a small epsilon to avoid log(0)
-            terminal_reward = np.log(belief_in_correct_meaning) * config.FINAL_REWARD_SCALAR
-            self.v_table[(config.HORIZON, s_H)] = terminal_reward
+            # The speaker in s_H was the listener in the final communicative turn (H-1).
+            # We care about their final belief state.
+            # The 'listener_id' in s_H refers to the speaker of turn H-1, who had the goal.
+            previous_speaker_id = s_H.listener_id
+            previous_speaker_goal = config.AGENT_PRIVATE_MEANINGS[previous_speaker_id]
+            
+            # The 'speaker_id' in s_H was the listener of turn H-1. We need their true state.
+            final_listener_id = s_H.speaker_id
+            final_listener_true_state = config.AGENT_PRIVATE_MEANINGS[final_listener_id]
+
+            goal_mappings = config.GOAL_ACHIEVEMENT_MAPPINGS.get(previous_speaker_goal)
+            
+            terminal_reward = 0.0
+            if goal_mappings and final_listener_true_state in goal_mappings:
+                # The single correct meaning given the listener's true, private state
+                correct_terminal_meaning = goal_mappings[final_listener_true_state]
+                
+                # The reward is the log of the listener's final belief in that correct meaning.
+                belief_in_correct_meaning = belief_dict.get(correct_terminal_meaning, 1e-9) # Use epsilon for log(0)
+                terminal_reward = np.log(belief_in_correct_meaning)
+            else:
+                # Fallback to original terminal reward for non-goal-oriented scenarios
+                true_meaning_of_previous_speaker = config.AGENT_PRIVATE_MEANINGS[s_H.listener_id]
+                belief_in_correct_meaning = belief_dict.get(true_meaning_of_previous_speaker, 1e-9)
+                terminal_reward = np.log(belief_in_correct_meaning)
+
+            self.v_table[(config.HORIZON, s_H)] = terminal_reward * config.FINAL_REWARD_SCALAR
 
         for t in tqdm(range(config.HORIZON - 1, -1, -1), desc="Solving Turns"):
             for s_t in reachable_states[t]:
@@ -148,7 +166,9 @@ class TabularBellmanSolver:
                     self.v_table[(t, s_t)] = 0.0
                 else:
                     # V_t(s_t) = alpha * log sum_u exp(Q_t(s_t, u) / alpha)
-                    log_sum_exp = np.log(np.sum(np.exp(q_vals / config.ALPHA)))
+                    scaled_q_vals = q_vals / config.ALPHA
+                    max_q = np.max(scaled_q_vals)
+                    log_sum_exp = max_q + np.log(np.sum(np.exp(scaled_q_vals - max_q)))
                     self.v_table[(t, s_t)] = config.ALPHA * log_sum_exp
 
         print("Offline solving complete.")

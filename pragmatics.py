@@ -19,27 +19,27 @@ class PragmaticRewardCalculator:
 
     def _initialize_literal_listener(self) -> dict:
         """
-        Builds the L_0 listener model programmatically based on substring matching.
-        An utterance u refers to any meaning m if u is a substring of m.
+        Builds the L_0 listener model programmatically based on the mappings
+        in the config file.
         """
-        listener = {}
-        num_meanings = len(config.ALL_MEANINGS)
+        listener = {u: {m: 0.0 for m in config.ALL_MEANINGS} for u in config.ALL_UTTERANCES}
+        mappings = config.LITERAL_LISTENER_MAPPINGS
 
-        for u in config.ALL_UTTERANCES:
-            listener[u] = {m: 0.0 for m in config.ALL_MEANINGS}
-            
+        if not mappings: # Fallback for ORIGINAL scenario or undefined mappings
             # Find all meanings that contain the utterance as a substring
-            matching_meanings = [m for m in config.ALL_MEANINGS if u in m]
-            
-            if matching_meanings:
-                # Assign uniform probability over the matching meanings
-                prob = 1.0 / len(matching_meanings)
-                for m in matching_meanings:
-                    listener[u][m] = prob
-            else:
-                # If no meaning contains the utterance, it's ambiguous across all meanings
-                for m in config.ALL_MEANINGS:
-                    listener[u][m] = 1.0 / num_meanings
+            for u in config.ALL_UTTERANCES:
+                matching_meanings = [m for m in config.ALL_MEANINGS if u in m]
+                if matching_meanings:
+                    prob = 1.0 / len(matching_meanings)
+                    for m in matching_meanings:
+                        listener[u][m] = prob
+        else:
+            for utterance, meanings in mappings.items():
+                if utterance in listener:
+                    prob = 1.0 / len(meanings)
+                    for meaning in meanings:
+                        if meaning in listener[utterance]:
+                            listener[utterance][meaning] = prob
         return listener
 
     def calculate_rewards_and_listener_model(self, state: DialogueState) -> (dict, dict):
@@ -98,11 +98,35 @@ class PragmaticRewardCalculator:
         # R_t(s_t, u_t) = log L*_t(m_{S_t}|u_t) - C(u_t)
         rewards = {}
         speaker_true_meaning = state.speaker_private_meaning
-        for u in config.ALL_UTTERANCES:
-            prob_correct_interpretation = optimal_listener_model[u][speaker_true_meaning]
-            # Add a small epsilon to avoid log(0)
-            log_prob = np.log(prob_correct_interpretation + 1e-9)
-            cost = config.UTTERANCE_COSTS[u]
-            rewards[u] = log_prob - cost
+
+        # Check if the speaker's goal is a meta-meaning defined in the mappings
+        goal_mappings = config.GOAL_ACHIEVEMENT_MAPPINGS.get(speaker_true_meaning)
+
+        if goal_mappings:
+            # Context-dependent reward calculation
+            speaker_belief_about_listener = state.get_belief_dict()
+            for u in config.ALL_UTTERANCES:
+                expected_log_prob = 0
+                # Iterate over the possible listener states (contexts) defined in the mapping
+                for listener_state, target_meaning in goal_mappings.items():
+                    # Belief that the listener is in this state
+                    belief_in_state = speaker_belief_about_listener.get(listener_state, 0)
+
+                    # Log-probability of the listener interpreting the utterance as the target meaning
+                    prob_correct_interpretation = optimal_listener_model[u].get(target_meaning, 1e-9)
+                    log_prob = np.log(prob_correct_interpretation)
+
+                    # Weight the log-prob by the belief that this is the correct context
+                    expected_log_prob += belief_in_state * log_prob
+
+                cost = config.UTTERANCE_COSTS[u]
+                rewards[u] = expected_log_prob - cost
+        else:
+            # Original, context-independent reward calculation
+            for u in config.ALL_UTTERANCES:
+                prob_correct_interpretation = optimal_listener_model[u].get(speaker_true_meaning, 1e-9)
+                log_prob = np.log(prob_correct_interpretation)
+                cost = config.UTTERANCE_COSTS[u]
+                rewards[u] = log_prob - cost
 
         return rewards, optimal_listener_model

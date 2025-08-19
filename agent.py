@@ -33,13 +33,16 @@ class StrategicAgent:
             # Fallback to a uniform random policy if state is not found
             return np.random.choice(list(config.ALL_UTTERANCES))
 
-        # 2. Form the optimal strategic policy (softmax over Q-values)
+        # 2. Form the optimal strategic policy (softmax over Q-values) using a stable implementation
         # S*_t(u_t|s_t) propto exp(Q_t(s_t, u_t) / alpha)
         utterances = list(q_values.keys())
         q_vals = np.array([q_values[u] for u in utterances])
         
         # The rationality parameter ALPHA is the inverse of RL temperature
-        policy_probs = np.exp(q_vals / config.ALPHA)
+        scaled_q_vals = q_vals / config.ALPHA
+        # Subtracting the max value before exponentiating prevents overflow and underflow
+        scaled_q_vals -= np.max(scaled_q_vals) 
+        policy_probs = np.exp(scaled_q_vals)
         policy_probs /= np.sum(policy_probs)
         
         policy = {u: p for u, p in zip(utterances, policy_probs)}
